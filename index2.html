@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samsung Store</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f7ff;
+  color: #111;
+}
+
+/* LOGIN */
+.login {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #001f5b, #000814);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background: rgba(255,255,255,0.10);
+  padding: 40px;
+  border-radius: 25px;
+  text-align: center;
+  width: 350px;
+  color: white;
+  box-shadow: 0 0 35px rgba(20,90,255,0.6);
+  backdrop-filter: blur(10px);
+}
+
+.login-box h1 {
+  margin-bottom: 25px;
+  font-size: 32px;
+}
+
+input {
+  width: 90%;
+  padding: 14px;
+  margin: 10px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+}
+
+button {
+  padding: 13px 30px;
+  margin: 10px;
+  border-radius: 25px;
+  border: none;
+  background: #1428a0;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #0b5cff;
+  transform: scale(1.05);
+}
+
+#msg {
+  color: #ff4d4d;
+  margin-top: 10px;
+}
+
+#home {
+  display: none;
+}
+
+/* NAV */
+nav {
+  background: #000;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+nav span {
+  margin: 0 18px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #001f5b, #000);
+  color: white;
+}
+
+.hero h1 {
+  font-size: 55px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.hero img {
+  width: 280px;
+  margin-top: 25px;
+}
+
+/* PRODUTOS */
+.titulo {
+  text-align: center;
+  font-size: 35px;
+  margin: 40px 0 10px;
+}
+
+.produtos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 25px;
+  padding: 35px;
+}
+
+.card {
+  background: white;
+  border-radius: 25px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 35px rgba(20,40,160,0.25);
+}
+
+.card img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
+
+.card h2 {
+  margin: 18px 0 8px;
+  font-size: 24px;
+}
+
+.card p {
+  color: #555;
+}
+
+.preco {
+  color: #1428a0 !important;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* CADASTRO */
+.cadastro {
+  text-align: center;
+  background: linear-gradient(135deg, #000814, #001f5b);
+  color: white;
+  padding: 50px 20px;
+}
+
+.cadastro h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+#cadastroMsg {
+  color: #7CFF8A;
+  margin-top: 10px;
+}
+
+.sair {
+  background: #555;
+}
+
+.sair:hover {
+  background: #333;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  background: #000;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div id="login" class="login">
+  <div class="login-box">
+    <h1>Samsung Store</h1>
+
+    <input type="text" id="usuario" placeholder="Digite seu usuário">
+    <input type="password" id="senha" placeholder="Digite sua senha">
+
+    <button onclick="login()">Entrar</button>
+    <p id="msg"></p>
+  </div>
+</div>
+
+<div id="home">
+
+  <nav>
+    <span>SAMSUNG</span>
+    <span>Galaxy S</span>
+    <span>Galaxy Z</span>
+    <span>Galaxy Tab</span>
+    <span>Watch</span>
+    <span>Buds</span>
+  </nav>
+
+  <section class="hero">
+    <h1>Galaxy S24 Ultra</h1>
+    <p>Galaxy AI. Câmera poderosa. Desempenho premium.</p>
+    <button>Comprar agora</button>
+    <br>
+    <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-s928bzkgzto/gallery/br-galaxy-s24-ultra-s928-sm-s928bzkgzto-thumb-539573088">
+  </section>
+
+  <h1 class="titulo">Produtos Samsung</h1>
+
+  <section class="produtos">
+
+    <div class="card">
+      <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-s928bzkgzto/gallery/br-galaxy-s24-ultra-s928-sm-s928bzkgzto-thumb-539573088">
+      <h2>Galaxy S24 Ultra</h2>
+      <p>Celular premium com Galaxy AI e câmera de alta resolução.</p>
+      <p class="preco">A partir de R$ 8.999</p>
+      <button>Ver produto</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-a556elvgzto/gallery/br-galaxy-a55-5g-sm-a556-sm-a556elvgzto-thumb-540313153">
+      <h2>Galaxy A55 5G</h2>
+      <p>Design moderno, boa bateria e ótimo desempenho.</p>
+      <p class="preco">A partir de R$ 2.699</p>
+      <button>Ver produto</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-f956bzskzto/gallery/br-galaxy-z-fold6-f956-sm-f956bzskzto-thumb-542061121">
+      <h2>Galaxy Z Fold6</h2>
+      <p>Tela dobrável, produtividade e tecnologia de ponta.</p>
+      <p class="preco">A partir de R$ 13.799</p>
+      <button>Ver produto</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-x910nzaazto/gallery/br-galaxy-tab-s9-ultra-wifi-x910-sm-x910nzaazto-thumb-537745914">
+      <h2>Galaxy Tab S9 Ultra</h2>
+      <p>Tablet potente para estudos, criação e entretenimento.</p>
+      <p class="preco">A partir de R$ 8.999</p>
+      <button>Ver produto</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-r960nzkazto/gallery/br-galaxy-watch6-classic-r960-sm-r960nzkazto-thumb-537440849">
+      <h2>Galaxy Watch6</h2>
+      <p>Saúde, exercícios e notificações direto no pulso.</p>
+      <p class="preco">A partir de R$ 2.499</p>
+      <button>Ver produto</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.samsung.com/is/image/samsung/p6pim/br/sm-r510nlvazto/gallery/br-galaxy-buds2-pro-r510-sm-r510nlvazto-thumb-533202765">
+      <h2>Galaxy Buds2 Pro</h2>
+      <p>Som imersivo, conforto e cancelamento de ruído.</p>
+      <p class="preco">A partir de R$ 1.299</p>
+      <button>Ver produto</button>
+    </div>
+
+  </section>
+
+  <section class="cadastro">
+    <h2>Cadastro de cliente</h2>
+
+    <input type="text" id="nome" placeholder="Digite seu nome">
+    <br>
+
+    <button onclick="cadastrar()">Cadastrar</button>
+    <p id="cadastroMsg"></p>
+
+    <br>
+    <button class="sair" onclick="logout()">Sair</button>
+  </section>
+
+  <footer>
+    <p>Site escolar inspirado na Samsung - Projeto SENAI</p>
+  </footer>
+
+</div>
+
+<script>
+function login() {
+  let usuario = document.getElementById("usuario").value;
+  let senha = document.getElementById("senha").value;
+
+  if (usuario == "professor" && senha == "1234") {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("home").style.display = "block";
+  } else {
+    document.getElementById("msg").innerHTML = "Usuário ou senha inválidos!";
+  }
+}
+
+function cadastrar() {
+  let nome = document.getElementById("nome").value;
+
+  if (nome == "") {
+    document.getElementById("cadastroMsg").innerHTML = "Digite seu nome.";
+  } else {
+    document.getElementById("cadastroMsg").innerHTML =
+      "Cadastro realizado com sucesso, " + nome + "!";
+  }
+}
+
+function logout() {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("login").style.display = "flex";
+}
+</script>
+
+</body>
+</html>

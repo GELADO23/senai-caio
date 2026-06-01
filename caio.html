@@ -117,16 +117,16 @@ footer {
 
 <body>
 
-<function login() {
-  let usuario = document.getElementById("usuario").value;
-  let senha = document.getElementById("senha").value;
+<div id="login" class="login">
+  <h1>Apple Store</h1>
+  <input type="text" id="usuario" placeholder="Digite seu usuário">
+  <br>
+  <input type="password" id="senha" placeholder="Digite sua senha">
+  <br>
+  <button onclick="login()">Entrar</button>
+  <p id="msg"></p>
+</div>
 
-  if (usuario == "professor" && senha == "1234") {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("home").style.display = "block";
-  } else {
-    document.getElementById("msg").innerHTML = "Usuário ou senha inválidos!";
-  }
 <div id="home">
 
   <nav>
