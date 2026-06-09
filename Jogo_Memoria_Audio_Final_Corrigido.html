@@ -244,7 +244,53 @@ button:hover {
 
 <button onclick="novoJogo()">↺ Novo Jogo</button>
 
+<div style="margin-top:15px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;">
+  <button id="muteBtn" onclick="alternarMute()">🔊 Som Ligado</button>
+  <label for="volumeControl" style="font-weight:600;">Volume</label>
+  <input type="range" id="volumeControl" min="0" max="100" value="70" oninput="ajustarVolume(this.value)">
+</div>
+
+
+
 <script>
+
+const somVirar = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3");
+const somAcerto = new Audio("https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3");
+const somErro = new Audio("https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3");
+const somVitoria = new Audio("https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3");
+
+let mutado = false;
+let volumeAtual = 0.7;
+
+function tocarSom(som) {
+  if (mutado) return;
+  som.pause();
+  som.currentTime = 0;
+  som.volume = volumeAtual;
+  som.play().catch(() => {});
+}
+
+function ajustarVolume(valor) {
+  volumeAtual = valor / 100;
+  [somVirar, somAcerto, somErro, somVitoria].forEach(som => {
+    som.volume = volumeAtual;
+  });
+}
+
+function alternarMute() {
+  mutado = !mutado;
+
+  if (mutado) {
+    [somVirar, somAcerto, somErro, somVitoria].forEach(som => {
+      som.pause();
+      som.currentTime = 0;
+    });
+  }
+
+  const botao = document.getElementById('muteBtn');
+  botao.textContent = mutado ? '🔇 Som Mutado' : '🔊 Som Ligado';
+}
+
 const TEMAS = [
   {
     nome: 'Tecnologia',
@@ -358,13 +404,14 @@ function iniciarJogo() {
 }
 
 function virarCarta(carta) {
-    if (
+  if (
     bloqueado ||
     carta.classList.contains('virada') ||
     carta.classList.contains('acertada')
   ) return;
 
   carta.classList.add('virada');
+  tocarSom(somVirar);
   cartasViradas.push(carta);
 
   if (cartasViradas.length < 2) return;
@@ -376,6 +423,8 @@ function virarCarta(carta) {
   const [c1, c2] = cartasViradas;
 
   if (c1.dataset.emoji === c2.dataset.emoji) {
+    tocarSom(somAcerto);
+
     setTimeout(() => {
       c1.classList.add('acertada');
       c2.classList.add('acertada');
@@ -387,6 +436,8 @@ function virarCarta(carta) {
       if (acertos === tema.emojis.length) vencer();
     }, 400);
   } else {
+    tocarSom(somErro);
+
     c1.classList.add('errado');
     c2.classList.add('errado');
 
@@ -401,6 +452,8 @@ function virarCarta(carta) {
 
 function vencer() {
   clearInterval(timer);
+  tocarSom(somVitoria);
+
   const segundos = Math.floor((Date.now() - inicio) / 1000);
   document.getElementById('mensagemVitoria').textContent =
     `Você venceu o tema ${tema.nome} em ${tentativas} tentativas e ${segundos}s!`;
@@ -416,7 +469,9 @@ function embaralhar(array) {
   return novo;
 }
 
+ajustarVolume(70);
 iniciarJogo();
+
 </script>
 </body>
 </html>
