@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Jogo do Milhão</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  font-family:Arial, Helvetica, sans-serif;
+  background:radial-gradient(circle at top,#1d4ed8,#020617 65%);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+#app{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.card{
+  background:rgba(2,6,23,.88);
+  border:2px solid #38bdf8;
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 0 30px rgba(56,189,248,.25);
+}
+header{text-align:center}
+h1{
+  font-size:2rem;
+  color:#facc15;
+  text-shadow:0 0 15px #facc15;
+}
+.sub{color:#bae6fd;font-size:.9rem;margin-top:5px}
+#money{
+  text-align:center;
+  font-size:1.35rem;
+  color:#22c55e;
+  font-weight:900;
+}
+#level{
+  text-align:center;
+  color:#facc15;
+  font-weight:bold;
+}
+#question{
+  font-size:1.1rem;
+  line-height:1.5;
+  text-align:center;
+  min-height:110px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.answers{
+  display:grid;
+  gap:10px;
+}
+.answer{
+  border:none;
+  border-radius:16px;
+  padding:15px;
+  font-size:1rem;
+  font-weight:bold;
+  color:white;
+  background:linear-gradient(135deg,#1e3a8a,#2563eb);
+  border:2px solid #60a5fa;
+  box-shadow:0 5px 0 #0f172a;
+  cursor:pointer;
+}
+.answer:active{transform:translateY(3px);box-shadow:0 2px 0 #0f172a}
+.answer.correct{background:linear-gradient(135deg,#15803d,#22c55e);border-color:#bbf7d0}
+.answer.wrong{background:linear-gradient(135deg,#991b1b,#ef4444);border-color:#fecaca}
+.answer.disabled{opacity:.45;pointer-events:none}
+.helpers{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.helper, #startBtn, #restartBtn, #stopBtn{
+  border:none;
+  border-radius:15px;
+  padding:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.helper{
+  background:#facc15;
+  color:#111827;
+}
+.helper.used{opacity:.4;pointer-events:none}
+.actions{
+  display:flex;
+  gap:10px;
+}
+#stopBtn{
+  flex:1;
+  background:#fb923c;
+  color:#111827;
+}
+#restartBtn{
+  flex:1;
+  background:#38bdf8;
+  color:#020617;
+}
+#startBtn{
+  width:100%;
+  background:#22c55e;
+  color:#020617;
+  font-size:1.1rem;
+}
+#message{
+  text-align:center;
+  font-weight:bold;
+  min-height:24px;
+  color:#facc15;
+}
+.screen{
+  display:none;
+  flex-direction:column;
+  gap:14px;
+}
+.screen.active{display:flex}
+.prize-list{
+  max-height:160px;
+  overflow:auto;
+  font-size:.8rem;
+  color:#cbd5e1;
+}
+.prize-item{
+  display:flex;
+  justify-content:space-between;
+  padding:5px 8px;
+  border-radius:8px;
+}
+.prize-item.active{
+  background:#facc15;
+  color:#111827;
+  font-weight:bold;
+}
+@media(max-width:370px){
+  h1{font-size:1.6rem}
+  .answer{padding:12px;font-size:.9rem}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="card">
+    <h1>💰 Jogo do Milhão</h1>
+    <p class="sub">Responda certo e chegue até R$ 1.000.000</p>
+  </header>
+
+  <section id="menu" class="screen active">
+    <div class="card">
+      <p style="text-align:center;line-height:1.6">
+        Você terá perguntas com 4 alternativas.<br>
+        Pode usar ajudas e parar quando quiser.
+      </p>
+    </div>
+    <button id="startBtn">▶ COMEÇAR</button>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="card">
+      <div id="money">R$ 0</div>
+      <div id="level">Pergunta 1</div>
+      <div id="question">Pergunta aqui</div>
+    </div>
+
+    <div class="answers">
+      <button class="answer" onclick="answer(0)">A</button>
+      <button class="answer" onclick="answer(1)">B</button>
+      <button class="answer" onclick="answer(2)">C</button>
+      <button class="answer" onclick="answer(3)">D</button>
+    </div>
+
+    <div class="helpers">
+      <button class="helper" id="help5050" onclick="use5050()">50/50</button>
+      <button class="helper" id="helpSkip" onclick="skipQuestion()">Pular</button>
+      <button class="helper" id="helpAudience" onclick="audienceHelp()">Placas</button>
+    </div>
+
+    <div class="actions">
+      <button id="stopBtn" onclick="stopGame()">PARAR</button>
+      <button id="restartBtn" onclick="restart()">REINICIAR</button>
+    </div>
+
+    <div id="message"></div>
+
+    <div class="card prize-list" id="prizeList"></div>
+  </section>
+
+  <section id="end" class="screen">
+    <div class="card" style="text-align:center">
+      <h2 id="endTitle">Fim de jogo</h2>
+      <p id="endText" style="margin-top:10px;line-height:1.6"></p>
+    </div>
+    <button id="restartBtn" onclick="restart()">↻ Jogar novamente</button>
+  </section>
+</div>
+
+<script>
+const questions=[
+  {q:"Qual linguagem é usada para estruturar páginas web?", a:["CSS","HTML","Python","SQL"], c:1},
+  {q:"Qual planeta é conhecido como Planeta Vermelho?", a:["Marte","Júpiter","Vênus","Saturno"], c:0},
+  {q:"Quantos lados tem um triângulo?", a:["2","3","4","5"], c:1},
+  {q:"Quem descobriu o Brasil em 1500?", a:["Dom Pedro I","Pedro Álvares Cabral","Tiradentes","Getúlio Vargas"], c:1},
+  {q:"Qual é o maior animal do mundo?", a:["Elefante","Tubarão branco","Baleia-azul","Girafa"], c:2},
+  {q:"Quanto é 9 x 8?", a:["64","72","81","96"], c:1},
+  {q:"Qual é a capital do Brasil?", a:["Rio de Janeiro","São Paulo","Brasília","Salvador"], c:2},
+  {q:"Qual tag cria um link em HTML?", a:["<img>","<a>","<p>","<div>"], c:1},
+  {q:"Qual desses é um sistema operacional?", a:["Windows","Google","HTML","YouTube"], c:0},
+  {q:"Qual é o resultado de 1000 + 500?", a:["150","1050","1500","2000"], c:2},
+  {q:"Qual elemento químico tem símbolo O?", a:["Ouro","Oxigênio","Ósmio","Óxido"], c:1},
+  {q:"Em que continente fica o Brasil?", a:["Europa","Ásia","América do Sul","África"], c:2},
+  {q:"Qual é o maior prêmio do jogo?", a:["R$ 100","R$ 10.000","R$ 1.000.000","R$ 50"], c:2}
+];
+
+const prizes=[1000,5000,10000,30000,50000,100000,150000,200000,300000,400000,500000,700000,1000000];
+
+let current=0;
+let won=0;
+let gameQuestions=[];
+let locked=false;
+let used5050=false, usedSkip=false, usedAudience=false;
+
+const money=document.getElementById("money");
+const level=document.getElementById("level");
+const question=document.getElementById("question");
+const buttons=[...document.querySelectorAll(".answer")];
+const msg=document.getElementById("message");
+
+function br(v){return "R$ "+v.toLocaleString("pt-BR")}
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function start(){
+  current=0; won=0; locked=false;
+  used5050=false; usedSkip=false; usedAudience=false;
+  document.querySelectorAll(".helper").forEach(h=>h.classList.remove("used"));
+  gameQuestions=shuffle(questions).slice(0,prizes.length);
+  show("game");
+  loadQuestion();
+}
+
+function loadQuestion(){
+  locked=false;
+  msg.textContent="";
+  buttons.forEach(b=>{b.className="answer"; b.disabled=false;});
+  const q=gameQuestions[current];
+  money.textContent=br(won);
+  level.textContent="Pergunta "+(current+1)+" valendo "+br(prizes[current]);
+  question.textContent=q.q;
+  q.a.forEach((txt,i)=>{
+    buttons[i].textContent=String.fromCharCode(65+i)+") "+txt;
+    buttons[i].style.display="block";
+  });
+  renderPrizes();
+}
+
+function answer(i){
+  if(locked)return;
+  locked=true;
+  const q=gameQuestions[current];
+
+  if(i===q.c){
+    buttons[i].classList.add("correct");
+    won=prizes[current];
+    msg.textContent="✅ Resposta certa!";
+    setTimeout(()=>{
+      current++;
+      if(current>=gameQuestions.length || won>=1000000){
+        finish("🏆 Você ganhou!", "Parabéns! Você terminou com "+br(won)+"!");
+      }else{
+        loadQuestion();
+      }
+    },900);
+  }else{
+    buttons[i].classList.add("wrong");
+    buttons[q.c].classList.add("correct");
+    const safe=current>=8?100000:current>=4?30000:0;
+    setTimeout(()=>finish("❌ Você errou!", "Você saiu com "+br(safe)+"."),1200);
+  }
+}
+
+function use5050(){
+  if(used5050||locked)return;
+  used5050=true;
+  document.getElementById("help5050").classList.add("used");
+  const q=gameQuestions[current];
+  let wrong=[0,1,2,3].filter(i=>i!==q.c);
+  wrong=shuffle(wrong).slice(0,2);
+  wrong.forEach(i=>buttons[i].classList.add("disabled"));
+  msg.textContent="🧠 50/50 usado!";
+}
+
+function skipQuestion(){
+  if(usedSkip||locked)return;
+  usedSkip=true;
+  document.getElementById("helpSkip").classList.add("used");
+  msg.textContent="⏭️ Pergunta pulada!";
+  setTimeout(()=>{
+    current++;
+    if(current>=gameQuestions.length) finish("🏆 Fim!", "Você saiu com "+br(won)+".");
+    else loadQuestion();
+  },700);
+}
+
+function audienceHelp(){
+  if(usedAudience||locked)return;
+  usedAudience=true;
+  document.getElementById("helpAudience").classList.add("used");
+  const q=gameQuestions[current];
+  const letters=["A","B","C","D"];
+  msg.textContent="📊 Placas: maioria aponta para "+letters[q.c]+"!";
+}
+
+function stopGame(){
+  finish("🛑 Você parou!", "Você garantiu "+br(won)+".");
+}
+
+function finish(title,text){
+  document.getElementById("endTitle").textContent=title;
+  document.getElementById("endText").textContent=text;
+  show("end");
+}
+
+function restart(){
+  show("menu");
+}
+
+function renderPrizes(){
+  const box=document.getElementById("prizeList");
+  box.innerHTML="";
+  prizes.forEach((p,i)=>{
+    const div=document.createElement("div");
+    div.className="prize-item"+(i===current?" active":"");
+    div.innerHTML="<span>"+(i+1)+"ª</span><span>"+br(p)+"</span>";
+    box.prepend(div);
+  });
+}
+
+document.getElementById("startBtn").addEventListener("click",start);
+</script>
+</body>
+</html>
